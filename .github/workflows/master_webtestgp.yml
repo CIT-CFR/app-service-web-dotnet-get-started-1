@@ -26,13 +26,13 @@ jobs:
         run: nuget restore
 
       - name: Publish to folder
-        run: msbuild /nologo /verbosity:m /t:Build /t:pipelinePreDeployCopyAllFilesToOneFolder /p:SkipExtraFilesOnServer=True /p:_PackageTempDir="\webtestgp\"
+        run: msbuild /nologo /verbosity:m /t:Build /t:pipelinePreDeployCopyAllFilesToOneFolder /p:SkipExtraFilesOnServer=True /p:_PackageTempDir="\webtestgp-master\"
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
-          name: webtestgp
-          path: '/webtestgp/**'
+          name: webtestgp-master
+          path: '/webtestgp-master/**'
 
   deploy:
     runs-on: windows-latest
@@ -45,8 +45,8 @@ jobs:
       - name: Download artifact from build job
         uses: actions/download-artifact@v2
         with:
-          name: webtestgp
-          path: webtestgp
+          name: webtestgp-master
+          path: webtestgp-master
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
@@ -54,5 +54,5 @@ jobs:
         with:
           app-name: 'webtestgp'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_9D062571317345DE80CBA0C6E3EECAEB }}
+          publish-profile: ${{ secrets.WEBTESTGP_MASTER }}
           package: D:\a\app-service-web-dotnet-get-started-1\app-service-web-dotnet-get-started-1\
