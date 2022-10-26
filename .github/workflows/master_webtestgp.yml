@@ -60,4 +60,4 @@ jobs:
           password: ${{ secrets.ftp_password }}
           protocol: ftps
           local-dir: D:/webtestgp-prod/
-          server-dir: /site/wwwroot/webtestgp-prod/                                             
+          server-dir: /site/wwwroot/webtestgp-prod/
