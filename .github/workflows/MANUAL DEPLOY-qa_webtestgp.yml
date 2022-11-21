@@ -3,11 +3,7 @@
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
 name: QA MANUAL
-
 on:
-#  push:
-#    branches:
-#      - qa
   workflow_dispatch:
 
 jobs:
