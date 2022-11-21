@@ -1,8 +1,5 @@
 name: QA-MANUAL-DEPLOY
 on:
-  push:
-    branches:
-      - qa
   workflow_dispatch:
 
 jobs:
