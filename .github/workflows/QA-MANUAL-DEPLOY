@@ -1,0 +1,63 @@
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
+name: QA MANUAL
+
+on:
+#  push:
+#    branches:
+#      - qa
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Setup MSBuild path
+        uses: microsoft/setup-msbuild@v1.0.2
+
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v1.0.5
+
+      - name: Restore NuGet packages
+        run: nuget restore
+
+      - name: Publish to folder
+        run: msbuild /nologo /verbosity:diag /t:Build /t:pipelinePreDeployCopyAllFilesToOneFolder /p:_PackageTempDir=\webtestgp-qa\
+        
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v3
+        with:
+          name: webtestgp-qa
+          path: '/webtestgp-qa/**'
+  deploy:
+    runs-on: windows-latest
+    needs: build
+    environment:
+      name: 'Production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v3
+        with:
+          name: webtestgp-qa
+          path: '/webtestgp-qa/'
+      - name: Azure login    
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          enable-AzPSSession: true  
+      - name: Sync Files
+        uses: SamKirkland/FTP-Deploy-Action@4.3.2
+        with: 
+          server: waws-prod-dm1-245.ftp.azurewebsites.windows.net
+          username: webtestdp\$webtestdp
+          password: ${{ secrets.ftp_password }}
+          protocol: ftps
+          local-dir: D:/webtestgp-qa/
+          server-dir: /site/wwwroot/webtestgp-qa/
