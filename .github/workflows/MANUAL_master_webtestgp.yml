@@ -2,7 +2,9 @@
 
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 name: MANUAL BUILD AND DEPLOY
-on:  [workflow_dispatch]
+
+on:  
+  workflow_dispatch:
 
 jobs:
   build:
